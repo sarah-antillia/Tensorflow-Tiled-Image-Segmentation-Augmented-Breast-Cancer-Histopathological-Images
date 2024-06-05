@@ -102,7 +102,8 @@ This dataset itself is licensed under a CC0 1.0 Universal (CC0 1.0) license.
 2 Breast Cancer ImageMask Dataset
 </a>
 </h3>
- If you would like to train this Breast-Cancer Segmentation model by yourself,
+ If you would like to train this Breast-Cancer Segmentation model by yourself,please down load the dataset 
+Mixed-Breast-Cancer-ImageMask-Dataset from the google drive
 <a href="https://drive.google.com/file/d/1tkGpCrHGIzzFKjrPhBQ4j1BOKbYGbGO0/view?usp=sharing">
 Mixed-Breast-Cancer-ImageMask-Dataset-M2.zip.</a>
 .<br>
@@ -157,9 +158,8 @@ Please move to ./projects/Mixed-Breast-Cancer and run the following bat file.<br
 <pre>
 >1.train.bat
 </pre>
-, which simply runs the following command.<br>
-<pre>
 This bat file simply runs the following command.
+<pre>
 >python ../../../src/TensorflowUNetTrainer.py ./train_eval_infer.config
 </pre>
 <pre>
@@ -290,7 +290,7 @@ epoch_change_infer     = True
 ; Output dir to save the infered masks on epoch_changed
 epoch_change_infer_dir =  "./epoch_change_infer"
 
-;Mixed-inference execution flag on epoch_changed
+;Tiled-inference execution flag on epoch_changed
 epoch_change_tiledinfer     = True
 ; Output dir to save the tiled-infered masks on epoch_changed
 epoch_change_tiledinfer_dir =  "./epoch_change_tiledinfer"
