@@ -373,7 +373,7 @@ folder contains some large image and mask files taken from the original BCSS dat
 <h3>
 7 Tiled Inference
 </h3>
-Please move to a <b>./projects/TensorflowSlightlyFlexibleUNet/Breast-Cancer</b> folder<br>
+Please move to a <b>./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer</b> folder<br>
 ,and run the following bat file to infer segmentation regions for images by the Trained-TensorflowUNet model for Breast-Cancer.<br>
 <pre>
 ./4.infer_tiles.bat
