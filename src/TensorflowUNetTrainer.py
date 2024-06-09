@@ -133,7 +133,8 @@ class TensorflowUNetTrainer:
      return count
 
   def create_callbacks(self):
-    patience   = self.config.get(ConfigParser.TRAIN, "patience")
+    # 2024/06/09 added dvalue=10
+    patience   = self.config.get(ConfigParser.TRAIN, "patience", dvalue=10)
     weight_filepath   = os.path.join(self.model_dir, self.BEST_MODEL_FILE)
     #Modified to correct "save_weights_only" name
     save_weights_only = self.config.get(ConfigParser.TRAIN, "save_weights_only", dvalue=False)
@@ -191,9 +192,10 @@ class TensorflowUNetTrainer:
       tiled_inference_callback = EpochChangeTiledInferencer(self.model, self.config_file)
       callbacks += [tiled_inference_callback]
 
-    early_stopping = tf.keras.callbacks.EarlyStopping(patience=patience, verbose=1)
-
-    callbacks += [early_stopping]
+    # 2024/06/09 At last add EarlyStopping callback to the callbacks list. 
+    if patience >0:
+      early_stopping = tf.keras.callbacks.EarlyStopping(patience=patience, verbose=1)
+      callbacks += [early_stopping]
 
     print("=== callbacks {}".format(callbacks))
     
