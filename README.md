@@ -318,7 +318,7 @@ By using these callbacks, on every epoch_change, the non-tiled ordinary inferenc
 <br>
 These inferred masks outputs on_epch_change will be helpful to examine the parameters for training of the configuration file.<br>
 <br>  
-The training process has stopped at epoch 20 by the <b>epoch</b> parameter setting of [train] section.<br><br>
+The training process has been stopped at epoch 34 by an early-stopping callback.<br><br>
 <img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/train_console_output_at_epoch_34_0609.png" width="720" height="auto"><br>
 <br>
 <br>
