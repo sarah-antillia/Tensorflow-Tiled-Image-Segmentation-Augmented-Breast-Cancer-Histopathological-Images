@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# EpochChangeTiledInferencer.py
+# TiledInferencer.py
 # 2024/06/01:  
 
 import os
@@ -44,14 +44,15 @@ class TiledInferencer(Inferencer):
     self.config = ConfigParser(config_file)
     self.num_classes = self.config.get(ConfigParser.MODEL, "num_classes")
 
-    self.images_dir = self.config.get(ConfigParser.TILEDINFER,  "images_dir")
-    self.output_dir  = self.config.get(ConfigParser.TILEDINFER, "output_dir")
+    self.images_dir = self.config.get(ConfigParser.TILEDINFER, "images_dir")
+    self.output_dir = self.config.get(ConfigParser.TILEDINFER, "output_dir")
     self.merged_dir = self.config.get(ConfigParser.TILEDINFER, "merged_dir")
     self.algorithm  = self.config.get(ConfigParser.TILEDINFER, "algorithm", dvalue=None)
     self.threshold  = self.config.get(ConfigParser.TILEDINFER, "threshold", dvalue=127)
 
     if self.on_epoch_change:
-       self.output_dir  = self.config.get(ConfigParser.TRAIN, "epoch_change_tiledinfer_dir", dvalue="./epoch_change_tiledinfer")
+       self.output_dir  = self.config.get(ConfigParser.TRAIN, "epoch_change_tiledinfer_dir", 
+                                          dvalue="./epoch_change_tiledinfer")
  
     self.num_infer_images = self.config.get(ConfigParser.TRAIN, "num_infer_images", dvalue=1)
 
@@ -72,7 +73,7 @@ class TiledInferencer(Inferencer):
     self.bitwise_blending    = self.config.get(ConfigParser.TILEDINFER, "bitwise_blending", dvalue=True)
     self.tiledinfer_binarize  = self.config.get(ConfigParser.TILEDINFER, "binarize", dvalue=False)
     self.tiledinfer_threshold = self.config.get(ConfigParser.TILEDINFER, "threshold", dvalue=127)
-    #print("--- bitwise_blending {}".format(self.bitwise_blending))
+
     self.bgcolor = self.config.get(ConfigParser.TILEDINFER, "background", dvalue=0)  
 
     self.color_order = self.config.get(ConfigParser.DATASET,   "color_order", dvalue="rgb")
@@ -83,7 +84,7 @@ class TiledInferencer(Inferencer):
     self.image_files += glob.glob(self.images_dir + "/*.bmp")
     self.width        = self.config.get(ConfigParser.MODEL, "image_width")
     self.height       = self.config.get(ConfigParser.MODEL, "image_height")
-    self.split_size  = self.config.get(ConfigParser.TILEDINFER, "split_size", dvalue=self.width)
+    self.split_size   = self.config.get(ConfigParser.TILEDINFER, "split_size", dvalue=self.width)
     #print("---split_size {}".format(self.split_size))
     self.num_classes  = self.config.get(ConfigParser.MODEL, "num_classes")
 

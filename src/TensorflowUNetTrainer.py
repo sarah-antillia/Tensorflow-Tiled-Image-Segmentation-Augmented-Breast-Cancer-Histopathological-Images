@@ -157,7 +157,6 @@ class TensorflowUNetTrainer:
                         patience= lr_patience,
                         min_lr  = 0.0)
 
-    early_stopping = tf.keras.callbacks.EarlyStopping(patience=patience, verbose=1)
     print("=== Created callback: EarlyStopping ")
     check_point    = tf.keras.callbacks.ModelCheckpoint(weight_filepath, verbose=1, 
                                      save_best_only    = True,
@@ -168,9 +167,9 @@ class TensorflowUNetTrainer:
     print("=== Created callback: EpochChangeCallback ")
     
     if reducer:
-      callbacks = [early_stopping, check_point, self.epoch_change, reducer]
+      callbacks = [check_point, self.epoch_change, reducer]
     else:
-      callbacks = [early_stopping, check_point, self.epoch_change]
+      callbacks = [check_point, self.epoch_change]
    
     seedreset_callback = self.config.get(ConfigParser.TRAIN, "seedreset_callback", dvalue=False) 
     if seedreset_callback:
@@ -191,6 +190,10 @@ class TensorflowUNetTrainer:
       print("=== Created callback: EpochChangeTiledInferecer")
       tiled_inference_callback = EpochChangeTiledInferencer(self.model, self.config_file)
       callbacks += [tiled_inference_callback]
+
+    early_stopping = tf.keras.callbacks.EarlyStopping(patience=patience, verbose=1)
+
+    callbacks += [early_stopping]
 
     print("=== callbacks {}".format(callbacks))
     

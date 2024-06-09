@@ -20,18 +20,8 @@ import os
 os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
 os.environ["TF_ENABLE_GPU_GARBAGE_COLLECTION"]="true"
 
-import numpy as np
-
-import shutil
-import sys
-import cv2
-import glob
-import traceback
 import tensorflow as tf
-from GrayScaleImageWriter import GrayScaleImageWriter
-from MaskColorizedWriter import MaskColorizedWriter
 
-from ConfigParser import ConfigParser
 from Inferencer import Inferencer
 
 class EpochChangeInferencer(tf.keras.callbacks.Callback):

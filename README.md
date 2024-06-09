@@ -1,4 +1,8 @@
-<h2>Tensorflow-Tiled-Image-Segmentation-Augmented-Breast-Cancer-Histopathological-Images (2024/06/05)</h2>
+<h2>Tensorflow-Tiled-Image-Segmentation-Augmented-Breast-Cancer-Histopathological-Images (Updated: 2024/06/09)</h2>
+<li>2023/06/09: Updated <a href="./src/TensorflowUNetTrainer.py">TensorflowTrainder.py</a> to add EarlyStoppingCallback to the last in a callbacklist.</li>
+<li>2023/06/09: Updated <a href="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/train_eval_infer.config">train_eval_infer.config</a>
+ to improve a segmetation accuracy.</li>
+
 
 This is the first experiment of Tiled Image Segmentation for Breast Cancer Histopathological Images based on
 the <a href="https://github.com/sarah-antillia/Tensorflow-Image-Segmentation-API">Tensorflow-Image-Segmentation-API</a>, and
@@ -164,7 +168,7 @@ This bat file simply runs the following command.
 </pre>
 <pre>
 ; train_eval_infer.config
-; 2024/06/05 (C) antillia.com
+; 2024/06/09 (C) antillia.com
 
 [model]
 model         = "TensorflowUNet"
@@ -175,11 +179,11 @@ image_channels = 3
 input_normalize = False
 num_classes    = 1
 base_filters   = 16
-base_kernels   = (5,5)
+base_kernels   = (7,7)
 normalization  = True
 num_layers     = 7
-dropout_rate   = 0.05
-learning_rate  = 0.00005
+dropout_rate   = 0.07
+learning_rate  = 0.00008
 clipvalue      = 0.5
 dilation       = (1,1)
 loss           = "bce_dice_loss"
@@ -187,7 +191,7 @@ metrics        = ["binary_accuracy"]
 show_summary   = False
 
 [train]
-epochs         = 20
+epochs         = 50
 batch_size     = 2
 steps_per_epoch  = 300
 validation_steps = 80
@@ -205,7 +209,7 @@ epoch_change_infer     = True
 ; Output dir to save the infered masks
 epoch_change_infer_dir =  "./epoch_change_infer"
 
-;Mixed-infer mask region on epoch_changed
+;Tiled-infer mask region on epoch_changed
 epoch_change_tiledinfer     = True
 ; Output dir to save the tiled-infered masks
 epoch_change_tiledinfer_dir =  "./epoch_change_tiledinfer"
@@ -214,10 +218,11 @@ epoch_change_tiledinfer_dir =  "./epoch_change_tiledinfer"
 num_infer_images       = 1
 
 learning_rate_reducer = True
-reducer_factor        = 0.2
+reducer_factor        = 0.3
 reducer_patience      = 4
 
 save_weights_only = True
+
 
 [eval]
 image_datapath = "../../../dataset/Mixed-Breast-Cancer/valid/images/"
@@ -235,7 +240,7 @@ output_dir    = "./mini_test_output"
 sharpening   = True
 
 [tiledinfer] 
-overlapping = 124
+overlapping = 128
 images_dir  = "./mini_test/images"
 output_dir  = "./tiled_mini_test_output"
 ; default bitwise_blending is True
@@ -264,10 +269,9 @@ augmentation  = True
 vflip    = True
 hflip    = True
 rotation = True
-angles   = [100, 200, 300,]
-shrinks  = [0.8]
+angles   = [60, 120, 180, 240, 300]
+shrinks  = [0.6, 0.8]
 shears   = [0.1]
-
 deformation = True
 distortion  = True
 
@@ -278,10 +282,15 @@ sigmoid  = 8
 [distortion]
 gaussian_filter_rsigma= 40
 gaussian_filter_sigma = 0.5
-distortions           = [0.03,]
+distortions           = [0.03]
 </pre>
-
-In this configuration file above, we added the following parameters to enable <b>epoch_change_infer</b> and 
+In this configuration file above, we modifed <b>base_kernel</b> size to become larger than the former experiment.<br>
+<pre>
+[train]
+base_kernels = (7,7)
+;base_kernels = (5,5)
+</pre>
+As before, we also added the following parameters to enable <b>epoch_change_infer</b> and 
 <b>epoch_change_tiledinfer</b> callbacks in [train] section.<br>
 <pre>
 [train]
@@ -310,7 +319,7 @@ By using these callbacks, on every epoch_change, the non-tiled ordinary inferenc
 These inferred masks outputs on_epch_change will be helpful to examine the parameters for training of the configuration file.<br>
 <br>  
 The training process has stopped at epoch 20 by the <b>epoch</b> parameter setting of [train] section.<br><br>
-<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/train_console_output_at_epoch_20.png" width="720" height="auto"><br>
+<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/train_console_output_at_epoch_34_0609.png" width="720" height="auto"><br>
 <br>
 <br>
 <a href="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/eval/train_metrics.csv">train_metrics.csv</a><br>
@@ -335,10 +344,16 @@ This bat file simply runs the following command.
 python ../../../src/TensorflowUNetEvaluator.py ./train_eval_infer.config
 </pre>
 Evaluation console output:<br>
-<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/evaluate_console_output_at_epoch_20.png" width="720" height="auto">
+<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/evaluate_console_output_at_epoch_34_0609.png" width="720" height="auto">
 <br><br>
 <a href="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/evaluation.csv">evaluation.csv</a><br>
-The loss (bce_dice_loss) and accuracy for this test dataset are very bad as shown below.<br>
+The loss (bce_dice_loss) and accuracy for this test dataset became slightly better than the former experiment as shown below.<br>
+This experiment evaluation result:<br>
+<pre>
+loss,0.4929
+binary_accuracy,0.7151
+</pre>
+The former experimant evaluation result:<br>
 <pre>
 loss,0.5309
 binary_accuracy,0.6921
@@ -367,7 +382,7 @@ folder contains some large image and mask files taken from the original BCSS dat
 <img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/mini_test_masks.png" width="1024" height="auto"><br>
 <br>
 <b>Inferred test masks</b><br>
-<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/mini_test_output.png" width="1024" height="auto"><br>
+<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/mini_test_output_0609.png" width="1024" height="auto"><br>
 <br>
 
 <h3>
@@ -385,7 +400,7 @@ python ../../../src/TensorflowUNetTiledInferencer.py ./train_eval_infer.config
 
 <br>
 <b>Tiled inferred test masks</b><br>
-<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/tiled_mini_test_output.png" width="1024" height="auto"><br>
+<img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/asset/tiled_mini_test_output_0609.png" width="1024" height="auto"><br>
 <br>
 
 
@@ -429,8 +444,6 @@ python ../../../src/TensorflowUNetTiledInferencer.py ./train_eval_infer.config
 <td><img src="./projects/TensorflowSlightlyFlexibleUNet/Mixed-Breast-Cancer/tiled_mini_test_output/1020.jpg" width="320" height="auto"></td>
 </tr>
 
-
-
 </table>
 <br>
 
@@ -460,14 +473,23 @@ Sensors 2023, 23(17), 7318; https://doi.org/10.3390/s2317318<br>
 https://www.mdpi.com/1424-8220/23/17/7318
 </pre>
 <br>
-<b>3. Mixed-ImageMask-Dataset-Breast-Cancer</b><br>
+
+<b>3. Exact Tile-Based Segmentation Inference for Images Larger than GPU Memory</b><br>
+Volume 126, Article No. 126009 (2021) https://doi.org/10.6028/jres.126.009<br>
+ Journal of Research of National Institute of Standards and Technology<br>
+Michael Majurski and Peter Bajcsy<br>
+<pre>
+https://nvlpubs.nist.gov/nistpubs/jres/126/jres.126.009.pdf
+</pre>
+<br>
+<b>4. Mixed-ImageMask-Dataset-Breast-Cancer</b><br>
 Toshyuki Arai @antillia.com<br>
 <pre>
 https://github.com/sarah-antillia/Mixed-ImageMask-Dataset-Breast-Cancer
 </pre>
 
 <br>
-<b>4. Tensorflow-Image-Segmentation-Breast-Cancer-Histopathological-Images</b><br>
+<b>5. Tensorflow-Image-Segmentation-Breast-Cancer-Histopathological-Images</b><br>
 Toshyuki Arai @antillia.com<br>
 <pre>
 https://github.com/sarah-antillia/Tensorflow-Image-Segmentation-Breast-Cancer-Histopathological-Images

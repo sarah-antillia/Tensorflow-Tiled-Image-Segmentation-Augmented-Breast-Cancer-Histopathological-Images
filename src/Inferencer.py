@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# EpochChangeInferencer.py
+# Inferencer.py
 # 2024/06/01:  
 
 import os
@@ -62,7 +62,8 @@ class Inferencer:
     self.blursize = self.config.get(ConfigParser.SEGMENTATION, "blursize", dvalue=None)
 
     verbose       = not self.on_epoch_change
-    self.writer   = GrayScaleImageWriter(colorize=self.colorize, black=self.black, white=self.white, verbose=verbose)
+    self.writer   = GrayScaleImageWriter(colorize=self.colorize, black=self.black, 
+                                         white=self.white, verbose=verbose)
 
     self.maskcolorizer = MaskColorizedWriter(self.config, verbose=verbose)
     self.mask_colorize = self.config.get(ConfigParser.INFER, "mask_colorize", dvalue=False)
@@ -91,7 +92,6 @@ class Inferencer:
     if not os.path.exists(self.output_dir):
       os.makedirs(self.output_dir)
 
-    
   def infer(self, epoch=None):
     if self.on_epoch_change == False:
       print("=== Inferencer.infer start")
@@ -139,7 +139,6 @@ class Inferencer:
         if self.on_epoch_change == False:
           print("=== Saved {}".format(merged_file))
         cv2.imwrite(merged_file, img)
-        #print("--- Saved {}".format(merged_file))   
 
   def predict(self, images, expand=True):
     predictions = []
@@ -161,7 +160,6 @@ class Inferencer:
         new_image = cv2.cvtColor(new_image, cv2.COLOR_RGBA2BGRA)
     return new_image
 
-  
   def sharpen(self, image):
     kernel = np.array([[-1,-1,-1], 
                        [-1, 9,-1],
@@ -189,8 +187,7 @@ class Inferencer:
 
   def binarize(self, mask):
     if self.num_classes == 1:
-      #algorithm = cv2.THRESH_OTSU
-      #_, mask = cv2.threshold(mask, 0, 255, algorithm)
+ 
       if self.tiledinfer_binarize:
 
         if  self.algorithm == cv2.THRESH_TRIANGLE or self.algorithm == cv2.THRESH_OTSU: 

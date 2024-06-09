@@ -20,24 +20,13 @@ import os
 os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
 os.environ["TF_ENABLE_GPU_GARBAGE_COLLECTION"]="true"
 
-import numpy as np
-
-import shutil
-import sys
-import cv2
-import glob
-import traceback
 import tensorflow as tf
-from GrayScaleImageWriter import GrayScaleImageWriter
-from MaskColorizedWriter import MaskColorizedWriter
-from PIL import Image
-from ConfigParser import ConfigParser
+
 from TiledInferencer import TiledInferencer
 
 class EpochChangeTiledInferencer(tf.keras.callbacks.Callback):
   def __init__(self, model, config_file):
     self.tiled_infernecer = TiledInferencer(model, config_file, on_epoch_change=True)
-        
     print("=== EpochChangeTiledInferencer.__init__ config?file {}".format(config_file))
 
   def on_epoch_end(self, epoch, logs):

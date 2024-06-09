@@ -23,18 +23,12 @@ os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
 os.environ["TF_ENABLE_GPU_GARBAGE_COLLECTION"]="true"
 
 import numpy as np
-
-import shutil
 import sys
-import cv2
-import glob
+
 import traceback
 
 from ConfigParser import ConfigParser
-from ImageMaskDataset import ImageMaskDataset
-from NormalizedImageMaskDataset import NormalizedImageMaskDataset
-from GrayScaleImageWriter import GrayScaleImageWriter
-from MaskColorizedWriter import MaskColorizedWriter
+
 
 from TensorflowUNet import TensorflowUNet
 from TensorflowAttentionUNet import TensorflowAttentionUNet 
@@ -66,15 +60,10 @@ class TensorflowUNetInferencer:
     self.unet  = ModelClass(config_file) 
     print("--- self.unet {}".format(self.unet))
     self.model = self.unet.model
-    print("--- self.model {}".format(self.model))
-    self.model_loader = TensorflowModelLoader(config_file)
 
     # 2024/04/22 Load Model
     self.loader = TensorflowModelLoader(config_file)
     self.loader.load(self.model)
-
-    #if not os.path.exists(self.images_dir):
-    #  raise Exception("Not found " + self.images_dir)
 
     # 2024/06/10
     self.inferencer = Inferencer(self.model, config_file)    
